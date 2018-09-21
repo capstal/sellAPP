@@ -14,7 +14,7 @@
         <li v-for='item in goods' class='food-list food-list-hook'>
           <h1 class='title'>{{item.name}}</h1>
           <ul>
-            <li v-for='food in item.foods' class='food-item border-1px'>
+            <li @click='selectFood(food,$event)' v-for='food in item.foods' class='food-item border-1px'>
               <div class="icon">
                 <img width='57' :src="food.icon">
               </div>
@@ -30,7 +30,7 @@
                   <span class='old' v-show='food.oldPrice'>￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food='food'></cartcontrol> 
+                  <cartcontrol :food='food'></cartcontrol>
                 </div>
               </div>
             </li>
@@ -38,15 +38,16 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price='seller.deliveryPrice' :min-price='seller.minPrice'></shopcart>
+    <shopcart :select-foods='selectFoods' :delivery-price='seller.deliveryPrice' :min-price='seller.minPrice'></shopcart>
   </div>
-
+  <food :food='selectedFood' v-ref:show-flag></food>
 </template>
 
 <script type='text/ecmascript-6'>
 import BScroll from "better-scroll";
-import shopcart from 'components/shopcart/shopcart'
-import cartcontrol from 'components/cartcontrol/cartcontrol'
+import shopcart from "components/shopcart/shopcart";
+import cartcontrol from "components/cartcontrol/cartcontrol";
+import food from "components/food/food";
 
 const ERR_OK = 0;
 
@@ -60,7 +61,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectedFood: {}
     };
   },
   computed: {
@@ -73,6 +75,17 @@ export default {
         }
       }
       return 0;
+    },
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
   created() {
@@ -120,14 +133,23 @@ export default {
         return 0;
       }
       let foodList = this.$els.foodWrapper.getElementsByClassName(
-        "food-list-hook")
-      let el = foodList[index]
-      this.foodScroll.scrollToElement(el,300)
+        "food-list-hook"
+      );
+      let el = foodList[index];
+      this.foodScroll.scrollToElement(el, 300);
+    },
+    selectFood(food, event) {
+      if (!event._constructed) {
+        return;
+      }
+      this.selectedFood = food;
+      this.$refs.showFlag.show();
     }
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   }
 };
 </script>
@@ -235,9 +257,8 @@ export default {
             font-size: 10px
             color: #ccc
         .cartcontrol-wrapper
-            position: absolute
-            right: 0
-            bottom 12px
-
+          position: absolute
+          right: 0
+          bottom: 12px
 </style>
 
