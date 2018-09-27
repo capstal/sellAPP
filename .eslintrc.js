@@ -27,6 +27,7 @@ module.exports = {
     'no-undef': 0,
     'spaced-comment': 0,
     'no-unused-vars': 0,
-    'no-trailing-spaces': 0
+    'no-trailing-spaces': 0,
+    'no-dupe-keys': 0
   }
 }
