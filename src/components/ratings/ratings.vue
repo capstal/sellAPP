@@ -41,7 +41,7 @@
                 <i class='icon-thumb_up'></i>
                 <span v-for='text in rating.recommend' class='item'>{{text}}</span>
               </div>
-              <div class="time">{{rating.rateTime}}</div>
+              <div class="time">{{rating.rateTime | formatDate}}</div>
             </div>
           </li>
         </ul>
@@ -55,6 +55,7 @@ import star from "components/star/star";
 import split from "components/split/split";
 import ratingselect from "components/ratingselect/ratingselect";
 import BScroll from "better-scroll";
+import {formatDate} from 'common/js/date'
 
 const ERR_OK = 0;
 const POSITIVE = 0;
@@ -77,6 +78,12 @@ export default {
   props: {
     seller: {
       type: Object
+    }
+  },
+  filters: {
+    formatDate(time) {
+      let date = new Date(time);
+      return formatDate(date, "yyyy-MM-dd hh:mm");
     }
   },
   created() {
