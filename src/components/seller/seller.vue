@@ -28,6 +28,10 @@
             </div>
           </li>
         </ul>
+        <div class="favorite" @click='toggleFavorite'>
+          <span class="icon-favorite" :class="{'active':favorite}"></span>
+          <span class="text">{{favoriteText}}</span>
+        </div>
       </div>
       <split></split>
       <div class="bulletin">
@@ -72,6 +76,11 @@ import split from "components/split/split";
 const ERR_OK = 0;
 
 export default {
+  data() {
+    return {
+      favorite: false
+    };
+  },
   props: {
     seller: {
       type: Object
@@ -96,6 +105,12 @@ export default {
     });
   },
   methods: {
+    toggleFavorite(event) {
+      if (!event._constructed) {
+        return;
+      }
+      this.favorite = !this.favorite;
+    },
     _initPics() {
       if (this.seller.pics) {
         let picWidth = 120;
@@ -113,6 +128,11 @@ export default {
           }
         });
       }
+    }
+  },
+  computed: {
+    favoriteText() {
+      return this.favorite ? "已收藏" : "收藏";
     }
   }
   // watch: {
@@ -179,7 +199,7 @@ export default {
         text-align: center
         border-right: 1px solid rgba(7.17 0.27 0 0.1)
         &:last-child
-          border-none()
+          border-right: none
         h2
           margin-bottom: 4px
           line-height: 10px
@@ -191,6 +211,24 @@ export default {
           line-height: 24px
           .stress
             font-size: 24px
+    .favorite
+      position: absolute
+      width: 50px
+      right: 11px
+      top: 18px
+      text-align: center
+      .icon-favorite
+        display: block
+        margin-bottom: 4px
+        line-height: 24px
+        font-size: 24px
+        color: #d4d6d9
+        &.active
+          color: rgb(240, 20, 20)
+      .text
+        line-height: 10px
+        font-size: 10px
+        color: rgb(77, 85, 93)
   .bulletin
     padding: 18px 18px 0 18px
     .title
